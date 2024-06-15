@@ -1,0 +1,39 @@
+{
+  "name": "node_extra_ca_certs_mozilla_bundle",
+  "version": "1.0.5",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env NODE_EXTRA_CA_CERTS=ca_bundle/ca_intermediate_root_bundle.pem node test_bundle.js",
+    "start": "node index.js",
+    "install": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arvind-agarwal/node_extra_ca_certs_mozilla_bundle.git"
+  },
+  "keywords": [
+    "NODE_EXTRA_CA_CERTS",
+    "Mozilla certificates",
+    "CA",
+    "certs",
+    "certificate error",
+    "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "CERT_UNTRUSTED",
+    "Unable to verify the first certificate",
+    "pem",
+    "pem certificate",
+    "pem certificates"
+  ],
+  "author": "Arvind Agarwal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arvind-agarwal/node_extra_ca_certs_mozilla_bundle/issues"
+  },
+  "homepage": "https://github.com/arvind-agarwal/node_extra_ca_certs_mozilla_bundle#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cross-env": "^6.0.3",
+    "csvtojson": "^2.0.10"
+  }
+}

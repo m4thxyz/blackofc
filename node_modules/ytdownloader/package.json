@@ -1,0 +1,34 @@
+{
+  "name": "ytdownloader.js",
+  "version": "1.0.9",
+  "description": "A Youtube Downloader",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viniciusgdr/ytdownloader.js.git"
+  },
+  "keywords": [
+    "youtube",
+    "downloader",
+    "videos",
+    "audio",
+    "mp3"
+  ],
+  "author": "viniciusgdr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/viniciusgdr/ytdownloader.js/issues"
+  },
+  "homepage": "https://github.com/viniciusgdr/ytdownloader.js#readme",
+  "dependencies": {
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "@types/request": "^2.48.8",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.5"
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "tipo": "quantidade",
+    "quant": 5
+  },
+  {
+    "tipo": "grupos",
+    "gps": []
+  },
+  {
+    "tipo": "mensagens",
+    "msgs": []
+  }
+]

@@ -1,0 +1,283 @@
+[
+  {
+    "title": "fruta",
+    "words": [
+      {
+        "nome": "banana",
+        "desc": "é amarela e grande"
+      },
+      {
+        "nome": "maçã",
+        "desc": "é pequena e vermelha"
+      },
+      {
+        "nome": "melancia",
+        "desc": "é grande e verde"
+      },
+      {
+        "nome": "melão",
+        "desc": "parece uma melancia, mas não é.."
+      },
+      {
+        "nome": "morango",
+        "desc": "sla, só sei que é gostoso"
+      },
+      {
+        "nome": "caju",
+        "desc": "meu pau no seu uc"
+      },
+      {
+        "nome": "carambola",
+        "desc": "expressão de espanto"
+      },
+      {
+        "nome": "limão",
+        "desc": "meu pau na sua mão"
+      },
+      {
+        "nome": "banana prata",
+        "desc": "segundo lugar? Kkkkkk"
+      },
+      {
+        "nome": "banana nanica",
+        "desc": "mó pequena kkkkk"
+      },
+      {
+        "nome": "jacarandá",
+        "desc": "nem sei o que é isso"
+      }
+    ]
+  },
+  {
+    "title": "filme",
+    "words": [
+      {
+        "nome": "Transformers",
+        "desc": "vindo do espaço, escondidos em veículos.."
+      },
+      {
+        "nome": "interestelar",
+        "desc": "estás disposto a viajar entre as estrelas para encontrar a salvação da humildade?"
+      },
+      {
+        "nome": "homem de ferro",
+        "desc": "um homem com armadura... Sem isso você é o que?"
+      },
+      {
+        "nome": "capitão América",
+        "desc": "um homem santificado"
+      },
+      {
+        "nome": "vingadores",
+        "desc": "os heróis mais poderosos da terra, unidos contra um inimigo que não é daqui..."
+      },
+      {
+        "nome": "eu sei o que vocês fizeram no verão passado",
+        "desc": "tô sabendo ein.."
+      }
+    ]
+  },
+  {
+    "title": "série",
+    "words": [
+      {
+        "nome": "The Flash",
+        "desc": "o homem mais rápido do mundo"
+      },
+      {
+        "nome": "the last of us",
+        "desc": "um vírus infectou a humildade"
+      },
+      {
+        "nome": "all of us are dead",
+        "desc": "série de zumbi norte coreana"
+      }
+    ]
+  },
+  {
+    "title": "marca de carro",
+    "words": [
+      {
+        "nome": "Volkswagen",
+        "desc": "vrum vrum"
+      },
+      {
+        "nome": "Fiat",
+        "desc": "o uno com escada vai mais rápido que uma Ferrari"
+      },
+      {
+        "nome": "Ford",
+        "desc": "tem só 4 letras ksks"
+      }
+    ]
+  },
+  {
+    "title": "profissão",
+    "words": [
+      {
+        "nome": "encanador",
+        "desc": "consertar vazamentos"
+      },
+      {
+        "nome": "ladrão",
+        "desc": "meu presidente"
+      },
+      {
+        "nome": "agiota",
+        "desc": "paga ou morre"
+      },
+      {
+        "nome": "bombeiro",
+        "desc": "gosta de pegar na mangueira"
+      }
+    ]
+  },
+  {
+    "title": "animal",
+    "words": [
+      {
+        "nome": "elefante",
+        "desc": "semelhante a Thais Carla"
+      },
+      {
+        "nome": "zebra",
+        "desc": "famosa por dar azar"
+      },
+      {
+        "nome": "macaco",
+        "desc": "preto"
+      },
+      {
+        "nome": "pika",
+        "desc": "mora nas áreas montanhosas do noroeste da China"
+      },
+      {
+        "nome": "porquinho da índia",
+        "desc": "não é daqui"
+      },
+      {
+        "nome": "cavalo marinho",
+        "desc": "mora no mar"
+      }
+    ]
+  },
+  {
+    "title": "país",
+    "words": [
+      {
+        "nome": "Austrália",
+        "desc": "lar dos cangurus"
+      }
+    ]
+  },
+  {
+    "title": "site",
+    "words": [
+      {
+        "nome": "xvideos",
+        "desc": "seu site favorito kkk"
+      }
+    ]
+  },
+  {
+    "title": "objeto",
+    "words": [
+      {
+        "nome": "bicicleta",
+        "desc": "precisa abrir as pernas para usar"
+      }
+    ]
+  },
+  {
+    "title": "nome",
+    "words": [
+      {
+        "nome": "Lula",
+        "desc": "ladrão"
+      },
+      {
+        "nome": "Bolsonaro",
+        "desc": "meu presidente"
+      },
+      {
+        "nome": "Rebeca",
+        "desc": "mulher"
+      },
+      {
+        "nome": "Maria Clara",
+        "desc": "mulher"
+      },
+      {
+        "nome": "Ana Clara",
+        "desc": "mulher"
+      },
+      {
+        "nome": "Anna Clara",
+        "desc": "mulher"
+      }
+    ]
+  },
+  {
+    "title": "cantor ou cantora",
+    "words": [
+      {
+        "nome": "Melody",
+        "desc": "nem o sol, nem a lua..."
+      },
+      {
+        "nome": "Larissa de Macedo Machado",
+        "desc": "Anitta"
+      },
+      {
+        "nome": "Taylor Swift",
+        "desc": "roteirista norte-americana"
+      }
+    ]
+  },
+  {
+    "title": "arma",
+    "words": [
+      {
+        "nome": "metralhadora",
+        "desc": "bem rápida até"
+      },
+      {
+        "nome": "submetralhadora",
+        "desc": "mais rápida será?"
+      },
+      {
+        "nome": "espingarda",
+        "desc": "grande estrago"
+      },
+      {
+        "nome": "USP",
+        "desc": "quase a faculdade kkkk"
+      },
+      {
+        "nome": "ak47",
+        "desc": "é o porte do homem"
+      }
+    ]
+  },
+  {
+    "title": "música",
+    "words": [
+      {
+        "nome": "infinity",
+        "desc": "Jaymes Young"
+      },
+      {
+        "nome": "arcade",
+        "desc": "Duncan Laurence"
+      },
+      {
+        "nome": "Stereo Hearts",
+        "desc": "Gym Class Heroes"
+      },
+      {
+        "nome": "Shape of You",
+        "desc": "Ed Sheeran"
+      }
+    ]
+  }
+]

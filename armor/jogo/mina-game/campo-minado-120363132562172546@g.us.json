@@ -1,0 +1,57 @@
+{
+  "jogadores": [
+    {
+      "id": "556481310187@s.whatsapp.net",
+      "erros": 1
+    },
+    {
+      "id": "558398796865@s.whatsapp.net",
+      "erros": 1
+    }
+  ],
+  "criador": "556481310187@s.whatsapp.net",
+  "chamado": "558398796865@s.whatsapp.net",
+  "play": 0,
+  "começou": true,
+  "dificuldade": "medium",
+  "totalminas": 14,
+  "totalquad": 7,
+  "minas": [
+    "2b",
+    "7b",
+    "3f",
+    "7d",
+    "6e",
+    "1d",
+    "1f",
+    "2c",
+    "3c",
+    "5g",
+    "3e",
+    "6f",
+    "7g",
+    "5f"
+  ],
+  "plantado": [
+    "4d",
+    "1b",
+    "3d",
+    "7c",
+    "3c",
+    "7g",
+    "3a",
+    "6e",
+    "7a",
+    "5b",
+    "4a",
+    "1g",
+    "5a",
+    "3g",
+    "3f",
+    "2f",
+    "1a",
+    "2e",
+    "2a",
+    "2d"
+  ]
+}
