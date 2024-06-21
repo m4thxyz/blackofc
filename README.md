@@ -20,9 +20,7 @@
 pkg upgrade -y && pkg update -y && pkg install nodejs -y && pkg install nodejs-lts -y && pkg install ffmpeg -y && pkg install wget -y && pkg install git -y
 ```
 **ATENÇÃO:**
-```
 Será necessário digitar y toda vez que for pedido [y/n]
-```
 ---------------------------
 
 **2° Comando**
@@ -38,20 +36,16 @@ cd /sdcard && git clone https://github.com/m4thxyz/blackofc
 cd blackofc && sh blackmd.sh
 ```
 
-## Start Do Bot <img src="https://user-images.githubusercontent.com/108157095/182053901-78e4a217-51ba-42a3-8ec5-38ed978ad752.png" height="25px">
-```
-sh blackmd.sh
+## 🖲️ START DO BOT 🖲️ <img src="https://user-images.githubusercontent.com/108157095/182053901-78e4a217-51ba-42a3-8ec5-38ed978ad752.png" height="25px">
 ```
 npm start
 ```
-
-## Gerar Um Novo QR <img src="https://user-images.githubusercontent.com/108157095/182053978-d1a08952-4625-4e3f-b469-c8ebe4f22ac8.png" height="25px">
+```
+sh blackmd.sh
+```
+## Gerar Um Novo QR  <img src="https://user-images.githubusercontent.com/108157095/182053978-d1a08952-4625-4e3f-b469-c8ebe4f22ac8.png" height="25px">
 ```
 sh qrcode.sh
 ```
-```
-```
-```
-```
 
-<img src="https://readme-typing-svg.herokuapp.com/?font=mono&size=30&duration=4000&color=FF0000&center=falso&vCenter=falso&lines=֎ 𝐁𝐋𝐀𝐂𝐊 𝐒𝐘𝐒𝐓𝐄𝐌 ֎">
+<img src="https://readme-typing-svg.herokuapp.com/?font=mono&size=30&duration=4000&color=FF0000&center=falso&vCenter=falso&lines=֎ 𝐁𝐋𝐀𝐂𝐊 𝐒𝐘𝐒𝐓𝐄𝐌 ֎"> 
