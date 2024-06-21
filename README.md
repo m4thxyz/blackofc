@@ -20,7 +20,7 @@
 pkg upgrade -y && pkg update -y && pkg install nodejs -y && pkg install nodejs-lts -y && pkg install ffmpeg -y && pkg install wget -y && pkg install git -y
 ```
 **ATENÇÃO:**
-Será necessário digitar y toda vez que for pedido a caixa [y/n]
+Será necessário digitar y toda vez que pedir a caixa [y/n]
 ---------------------------
 
 **2° Comando**
