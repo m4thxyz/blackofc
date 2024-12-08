@@ -11,10 +11,11 @@
   "modoaluguel": false,
   "msgpv": false,
   "botoff": false,
-  "botoes": true,
+  "botoes": false,
   "stopcmdlist": true,
   "recarga": false,
   "host": "TERMUX / HOST WEB",
+  "AssemblyApiKey": "11d7fb1a4e8f4e4fac85d3b9be844b4a",
   "blacksite": "https://blacksystemofc.com.br",
   "idchatofc": "120363047549719506@g.us",
   "idprivategp": "556481310187@whatsapp.net",
@@ -24,6 +25,5 @@
   "dono3": ".",
   "dono4": ".",
   "dono5": ".",
-  "dono6": ".",
-  "cooldow": 10
+  "dono6": "."
 }
