@@ -44,7 +44,8 @@ exports.PROCESSABLE_HISTORY_TYPES = [
     WAProto_1.proto.Message.HistorySyncNotification.HistorySyncType.INITIAL_BOOTSTRAP,
     WAProto_1.proto.Message.HistorySyncNotification.HistorySyncType.PUSH_NAME,
     WAProto_1.proto.Message.HistorySyncNotification.HistorySyncType.RECENT,
-    WAProto_1.proto.Message.HistorySyncNotification.HistorySyncType.FULL
+    WAProto_1.proto.Message.HistorySyncNotification.HistorySyncType.FULL,
+    WAProto_1.proto.Message.HistorySyncNotification.HistorySyncType.ON_DEMAND,
 ];
 exports.DEFAULT_CONNECTION_CONFIG = {
     version: baileys_version_json_1.version,
@@ -75,6 +76,7 @@ exports.DEFAULT_CONNECTION_CONFIG = {
         snapshot: false,
     },
     getMessage: async () => undefined,
+    cachedGroupMetadata: async () => undefined,
     makeSignalRepository: libsignal_1.makeLibSignalRepository
 };
 exports.MEDIA_PATH_MAP = {

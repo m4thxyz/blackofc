@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { Boom } from '@hapi/boom';
 import { proto } from '../../WAProto';
-import { ChatModification, MessageUpsertType, SocketConfig, WABusinessProfile, WAMediaUpload, WAPatchCreate, WAPresence, WAPrivacyCallValue, WAPrivacyOnlineValue, WAPrivacyValue, WAReadReceiptsValue } from '../Types';
+import { ChatModification, MessageUpsertType, SocketConfig, WABusinessProfile, WAMediaUpload, WAPatchCreate, WAPresence, WAPrivacyCallValue, WAPrivacyGroupAddValue, WAPrivacyOnlineValue, WAPrivacyValue, WAReadReceiptsValue } from '../Types';
 import { BinaryNode } from '../WABinary';
 export declare const makeChatsSocket: (config: SocketConfig) => {
     processingMutex: {
@@ -35,7 +35,7 @@ export declare const makeChatsSocket: (config: SocketConfig) => {
     updateProfilePicturePrivacy: (value: WAPrivacyValue) => Promise<void>;
     updateStatusPrivacy: (value: WAPrivacyValue) => Promise<void>;
     updateReadReceiptsPrivacy: (value: WAReadReceiptsValue) => Promise<void>;
-    updateGroupsAddPrivacy: (value: WAPrivacyValue) => Promise<void>;
+    updateGroupsAddPrivacy: (value: WAPrivacyGroupAddValue) => Promise<void>;
     updateDefaultDisappearingMode: (duration: number) => Promise<void>;
     getBusinessProfile: (jid: string) => Promise<WABusinessProfile | void>;
     resyncAppState: (collections: readonly ("critical_block" | "critical_unblock_low" | "regular_high" | "regular_low" | "regular")[], isInitialSync: boolean) => Promise<void>;

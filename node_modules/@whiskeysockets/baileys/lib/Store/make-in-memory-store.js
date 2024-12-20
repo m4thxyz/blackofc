@@ -66,7 +66,11 @@ exports.default = (config) => {
         ev.on('connection.update', update => {
             Object.assign(state, update);
         });
-        ev.on('messaging-history.set', ({ chats: newChats, contacts: newContacts, messages: newMessages, isLatest }) => {
+        ev.on('messaging-history.set', ({ chats: newChats, contacts: newContacts, messages: newMessages, isLatest, syncType }) => {
+            if (syncType === WAProto_1.proto.HistorySync.HistorySyncType.ON_DEMAND) {
+                return; // FOR NOW,
+                //TODO: HANDLE
+            }
             if (isLatest) {
                 chats.clear();
                 for (const id in messages) {

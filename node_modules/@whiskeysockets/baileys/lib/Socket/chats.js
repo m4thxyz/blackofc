@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeChatsSocket = void 0;
 const boom_1 = require("@hapi/boom");
+const node_cache_1 = __importDefault(require("node-cache"));
 const WAProto_1 = require("../../WAProto");
 const Defaults_1 = require("../Defaults");
 const Types_1 = require("../Types");
@@ -23,6 +24,13 @@ const makeChatsSocket = (config) => {
     let pendingAppStateSync = false;
     /** this mutex ensures that the notifications (receipts, messages etc.) are processed in order */
     const processingMutex = (0, make_mutex_1.makeMutex)();
+    const placeholderResendCache = config.placeholderResendCache || new node_cache_1.default({
+        stdTTL: Defaults_1.DEFAULT_CACHE_TTLS.MSG_RETRY,
+        useClones: false
+    });
+    if (!config.placeholderResendCache) {
+        config.placeholderResendCache = placeholderResendCache;
+    }
     /** helper function to fetch the given app state sync key */
     const getAppStateSyncKey = async (keyId) => {
         const { [keyId]: key } = await authState.keys.get('app-state-sync-key', [keyId]);
@@ -734,6 +742,7 @@ const makeChatsSocket = (config) => {
             })(),
             (0, process_message_1.default)(msg, {
                 shouldProcessHistoryMsg,
+                placeholderResendCache,
                 ev,
                 creds: authState.creds,
                 keyStore: authState.keys,

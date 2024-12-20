@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.jidNormalizedUser = exports.isJidStatusBroadcast = exports.isJidGroup = exports.isJidBroadcast = exports.isLidUser = exports.isJidUser = exports.areJidsSameUser = exports.jidDecode = exports.jidEncode = exports.STORIES_JID = exports.PSA_WID = exports.SERVER_JID = exports.OFFICIAL_BIZ_JID = exports.S_WHATSAPP_NET = void 0;
+exports.jidNormalizedUser = exports.isJidNewsletter = exports.isJidStatusBroadcast = exports.isJidGroup = exports.isJidBroadcast = exports.isLidUser = exports.isJidUser = exports.areJidsSameUser = exports.jidDecode = exports.jidEncode = exports.STORIES_JID = exports.PSA_WID = exports.SERVER_JID = exports.OFFICIAL_BIZ_JID = exports.S_WHATSAPP_NET = void 0;
 exports.S_WHATSAPP_NET = '@s.whatsapp.net';
 exports.OFFICIAL_BIZ_JID = '16505361212@c.us';
 exports.SERVER_JID = 'server@c.us';
@@ -48,6 +48,9 @@ exports.isJidGroup = isJidGroup;
 /** is the jid the status broadcast */
 const isJidStatusBroadcast = (jid) => jid === 'status@broadcast';
 exports.isJidStatusBroadcast = isJidStatusBroadcast;
+/** is the jid a newsletter */
+const isJidNewsletter = (jid) => (jid === null || jid === void 0 ? void 0 : jid.endsWith('@newsletter'));
+exports.isJidNewsletter = isJidNewsletter;
 const jidNormalizedUser = (jid) => {
     const result = (0, exports.jidDecode)(jid);
     if (!result) {

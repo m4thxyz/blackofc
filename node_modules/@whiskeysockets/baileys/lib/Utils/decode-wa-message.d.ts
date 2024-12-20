@@ -2,6 +2,7 @@ import { Logger } from 'pino';
 import { proto } from '../../WAProto';
 import { SignalRepository } from '../Types';
 import { BinaryNode } from '../WABinary';
+export declare const NO_MESSAGE_FOUND_ERROR_TEXT = "Message absent from node";
 /**
  * Decode the received node as a message.
  * @note this will only parse the message, not decrypt it

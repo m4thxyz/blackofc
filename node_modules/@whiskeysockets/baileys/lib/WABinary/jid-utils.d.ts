@@ -26,4 +26,6 @@ export declare const isJidBroadcast: (jid: string | undefined) => boolean | unde
 export declare const isJidGroup: (jid: string | undefined) => boolean | undefined;
 /** is the jid the status broadcast */
 export declare const isJidStatusBroadcast: (jid: string) => boolean;
+/** is the jid a newsletter */
+export declare const isJidNewsletter: (jid: string | undefined) => boolean | undefined;
 export declare const jidNormalizedUser: (jid: string | undefined) => string;

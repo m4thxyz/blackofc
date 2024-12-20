@@ -1,16 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decryptMessageNode = exports.decodeMessageNode = void 0;
+exports.decryptMessageNode = exports.decodeMessageNode = exports.NO_MESSAGE_FOUND_ERROR_TEXT = void 0;
 const boom_1 = require("@hapi/boom");
 const WAProto_1 = require("../../WAProto");
 const WABinary_1 = require("../WABinary");
 const generics_1 = require("./generics");
-const NO_MESSAGE_FOUND_ERROR_TEXT = 'Message absent from node';
+exports.NO_MESSAGE_FOUND_ERROR_TEXT = 'Message absent from node';
 /**
  * Decode the received node as a message.
  * @note this will only parse the message, not decrypt it
  */
 function decodeMessageNode(stanza, meId, meLid) {
+    var _a;
     let msgType;
     let chatId;
     let author;
@@ -68,11 +69,16 @@ function decodeMessageNode(stanza, meId, meLid) {
         chatId = from;
         author = participant;
     }
+    else if ((0, WABinary_1.isJidNewsletter)(from)) {
+        msgType = 'newsletter';
+        chatId = from;
+        author = from;
+    }
     else {
         throw new boom_1.Boom('Unknown message type', { data: stanza });
     }
     const fromMe = ((0, WABinary_1.isLidUser)(from) ? isMeLid : isMe)(stanza.attrs.participant || stanza.attrs.from);
-    const pushname = stanza.attrs.notify;
+    const pushname = (_a = stanza === null || stanza === void 0 ? void 0 : stanza.attrs) === null || _a === void 0 ? void 0 : _a.notify;
     const key = {
         remoteJid: chatId,
         fromMe,
@@ -111,7 +117,7 @@ const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
                         const details = WAProto_1.proto.VerifiedNameCertificate.Details.decode(cert.details);
                         fullMessage.verifiedBizName = details.verifiedName;
                     }
-                    if (tag !== 'enc') {
+                    if (tag !== 'enc' && tag !== 'plaintext') {
                         continue;
                     }
                     if (!(content instanceof Uint8Array)) {
@@ -120,7 +126,7 @@ const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
                     decryptables += 1;
                     let msgBuffer;
                     try {
-                        const e2eType = attrs.type;
+                        const e2eType = tag === 'plaintext' ? 'plaintext' : attrs.type;
                         switch (e2eType) {
                             case 'skmsg':
                                 msgBuffer = await repository.decryptGroupMessage({
@@ -138,10 +144,13 @@ const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
                                     ciphertext: content
                                 });
                                 break;
+                            case 'plaintext':
+                                msgBuffer = content;
+                                break;
                             default:
                                 throw new Error(`Unknown e2e type: ${e2eType}`);
                         }
-                        let msg = WAProto_1.proto.Message.decode((0, generics_1.unpadRandomMax16)(msgBuffer));
+                        let msg = WAProto_1.proto.Message.decode(e2eType !== 'plaintext' ? (0, generics_1.unpadRandomMax16)(msgBuffer) : msgBuffer);
                         msg = ((_a = msg.deviceSentMessage) === null || _a === void 0 ? void 0 : _a.message) || msg;
                         if (msg.senderKeyDistributionMessage) {
                             try {
@@ -171,7 +180,7 @@ const decryptMessageNode = (stanza, meId, meLid, repository, logger) => {
             // if nothing was found to decrypt
             if (!decryptables) {
                 fullMessage.messageStubType = WAProto_1.proto.WebMessageInfo.StubType.CIPHERTEXT;
-                fullMessage.messageStubParameters = [NO_MESSAGE_FOUND_ERROR_TEXT, JSON.stringify(stanza, generics_1.BufferJSON.replacer)];
+                fullMessage.messageStubParameters = [exports.NO_MESSAGE_FOUND_ERROR_TEXT];
             }
         }
     };

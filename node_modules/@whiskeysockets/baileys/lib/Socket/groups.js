@@ -188,6 +188,16 @@ const makeGroupsSocket = (config) => {
             return result === null || result === void 0 ? void 0 : result.attrs.jid;
         },
         /**
+         * revoke a v4 invite for someone
+         * @param groupJid group jid
+         * @param invitedJid jid of person you invited
+         * @returns true if successful
+         */
+        groupRevokeInviteV4: async (groupJid, invitedJid) => {
+            const result = await groupQuery(groupJid, 'set', [{ tag: 'revoke', attrs: {}, content: [{ tag: 'participant', attrs: { jid: invitedJid } }] }]);
+            return !!result;
+        },
+        /**
          * accept a GroupInviteMessage
          * @param key the key of the invite message, or optionally only provide the jid of the person who sent the invite
          * @param inviteMessage the message to accept

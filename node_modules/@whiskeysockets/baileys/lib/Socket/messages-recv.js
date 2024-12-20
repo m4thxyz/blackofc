@@ -19,7 +19,7 @@ const messages_send_1 = require("./messages-send");
 const makeMessagesRecvSocket = (config) => {
     const { logger, retryRequestDelayMs, maxMsgRetryCount, getMessage, shouldIgnoreJid } = config;
     const sock = (0, messages_send_1.makeMessagesSocket)(config);
-    const { ev, authState, ws, processingMutex, signalRepository, query, upsertMessage, resyncAppState, onUnexpectedError, assertSessions, sendNode, relayMessage, sendReceipt, uploadPreKeys, } = sock;
+    const { ev, authState, ws, processingMutex, signalRepository, query, upsertMessage, resyncAppState, onUnexpectedError, assertSessions, sendNode, relayMessage, sendReceipt, uploadPreKeys, sendPeerDataOperationMessage, } = sock;
     /** this mutex ensures that each retryRequest will wait for the previous one to finish */
     const retryMutex = (0, make_mutex_1.makeMutex)();
     const msgRetryCache = config.msgRetryCounterCache || new node_cache_1.default({
@@ -28,6 +28,10 @@ const makeMessagesRecvSocket = (config) => {
     });
     const callOfferCache = config.callOfferCache || new node_cache_1.default({
         stdTTL: Defaults_1.DEFAULT_CACHE_TTLS.CALL_OFFER,
+        useClones: false
+    });
+    const placeholderResendCache = config.placeholderResendCache || new node_cache_1.default({
+        stdTTL: Defaults_1.DEFAULT_CACHE_TTLS.MSG_RETRY,
         useClones: false
     });
     let sendActiveReceipts = false;
@@ -75,8 +79,10 @@ const makeMessagesRecvSocket = (config) => {
         await query(stanza);
     };
     const sendRetryRequest = async (node, forceIncludeKeys = false) => {
-        const { id: msgId, participant } = node.attrs;
-        const key = `${msgId}:${participant}`;
+        const { fullMessage } = (0, Utils_1.decodeMessageNode)(node, authState.creds.me.id, authState.creds.me.lid || '');
+        const { key: msgKey } = fullMessage;
+        const msgId = msgKey.id;
+        const key = `${msgId}:${msgKey === null || msgKey === void 0 ? void 0 : msgKey.participant}`;
         let retryCount = msgRetryCache.get(key) || 0;
         if (retryCount >= maxMsgRetryCount) {
             logger.debug({ retryCount, msgId }, 'reached retry limit, clearing');
@@ -86,6 +92,11 @@ const makeMessagesRecvSocket = (config) => {
         retryCount += 1;
         msgRetryCache.set(key, retryCount);
         const { account, signedPreKey, signedIdentityKey: identityKey } = authState.creds;
+        if (retryCount === 1) {
+            //request a resend via phone
+            const msgId = await requestPlaceholderResend(msgKey);
+            logger.debug(`sendRetryRequest: requested placeholder resend for message ${msgId}`);
+        }
         const deviceIdentity = (0, Utils_1.encodeSignedDeviceIdentity)(account, true);
         await authState.keys.transaction(async () => {
             const receipt = {
@@ -164,7 +175,7 @@ const makeMessagesRecvSocket = (config) => {
         }
     };
     const handleGroupNotification = (participant, child, msg) => {
-        var _a, _b;
+        var _a, _b, _c, _d;
         const participantJid = ((_b = (_a = (0, WABinary_1.getBinaryNodeChild)(child, 'participant')) === null || _a === void 0 ? void 0 : _a.attrs) === null || _b === void 0 ? void 0 : _b.jid) || participant;
         switch (child === null || child === void 0 ? void 0 : child.tag) {
             case 'create':
@@ -216,6 +227,11 @@ const makeMessagesRecvSocket = (config) => {
             case 'subject':
                 msg.messageStubType = Types_1.WAMessageStubType.GROUP_CHANGE_SUBJECT;
                 msg.messageStubParameters = [child.attrs.subject];
+                break;
+            case 'description':
+                const description = (_d = (_c = (0, WABinary_1.getBinaryNodeChild)(child, 'body')) === null || _c === void 0 ? void 0 : _c.content) === null || _d === void 0 ? void 0 : _d.toString();
+                msg.messageStubType = Types_1.WAMessageStubType.GROUP_CHANGE_DESCRIPTION;
+                msg.messageStubParameters = description ? [description] : undefined;
                 break;
             case 'announcement':
             case 'not_announcement':
@@ -572,14 +588,32 @@ const makeMessagesRecvSocket = (config) => {
         ]);
     };
     const handleMessage = async (node) => {
-        var _a, _b;
+        var _a, _b, _c;
         if (shouldIgnoreJid(node.attrs.from) && node.attrs.from !== '@s.whatsapp.net') {
             logger.debug({ key: node.attrs.key }, 'ignored message');
             await sendMessageAck(node);
             return;
         }
+        let response;
+        if ((0, WABinary_1.getBinaryNodeChild)(node, 'unavailable') && !(0, WABinary_1.getBinaryNodeChild)(node, 'enc')) {
+            await sendMessageAck(node);
+            const { key } = (0, Utils_1.decodeMessageNode)(node, authState.creds.me.id, authState.creds.me.lid || '').fullMessage;
+            response = await requestPlaceholderResend(key);
+            if (response === 'RESOLVED') {
+                return;
+            }
+            logger.debug('received unavailable message, acked and requested resend from phone');
+        }
+        else {
+            if (placeholderResendCache.get(node.attrs.id)) {
+                placeholderResendCache.del(node.attrs.id);
+            }
+        }
         const { fullMessage: msg, category, author, decrypt } = (0, Utils_1.decryptMessageNode)(node, authState.creds.me.id, authState.creds.me.lid || '', signalRepository, logger);
-        if (((_b = (_a = msg.message) === null || _a === void 0 ? void 0 : _a.protocolMessage) === null || _b === void 0 ? void 0 : _b.type) === WAProto_1.proto.Message.ProtocolMessage.Type.SHARE_PHONE_NUMBER) {
+        if (response && ((_a = msg === null || msg === void 0 ? void 0 : msg.messageStubParameters) === null || _a === void 0 ? void 0 : _a[0]) === Utils_1.NO_MESSAGE_FOUND_ERROR_TEXT) {
+            msg.messageStubParameters = [Utils_1.NO_MESSAGE_FOUND_ERROR_TEXT, response];
+        }
+        if (((_c = (_b = msg.message) === null || _b === void 0 ? void 0 : _b.protocolMessage) === null || _c === void 0 ? void 0 : _c.type) === WAProto_1.proto.Message.ProtocolMessage.Type.SHARE_PHONE_NUMBER) {
             if (node.attrs.sender_pn) {
                 ev.emit('chats.phoneNumberShare', { lid: node.attrs.from, jid: node.attrs.sender_pn });
             }
@@ -591,6 +625,9 @@ const makeMessagesRecvSocket = (config) => {
                 if (msg.messageStubType === WAProto_1.proto.WebMessageInfo.StubType.CIPHERTEXT) {
                     retryMutex.mutex(async () => {
                         if (ws.isOpen) {
+                            if ((0, WABinary_1.getBinaryNodeChild)(node, 'unavailable')) {
+                                return;
+                            }
                             const encNode = (0, WABinary_1.getBinaryNodeChild)(node, 'enc');
                             await sendRetryRequest(node, !encNode);
                             if (retryRequestDelayMs) {
@@ -632,6 +669,54 @@ const makeMessagesRecvSocket = (config) => {
             }),
             sendMessageAck(node)
         ]);
+    };
+    const fetchMessageHistory = async (count, oldestMsgKey, oldestMsgTimestamp) => {
+        var _a;
+        if (!((_a = authState.creds.me) === null || _a === void 0 ? void 0 : _a.id)) {
+            throw new boom_1.Boom('Not authenticated');
+        }
+        const pdoMessage = {
+            historySyncOnDemandRequest: {
+                chatJid: oldestMsgKey.remoteJid,
+                oldestMsgFromMe: oldestMsgKey.fromMe,
+                oldestMsgId: oldestMsgKey.id,
+                oldestMsgTimestampMs: oldestMsgTimestamp,
+                onDemandMsgCount: count
+            },
+            peerDataOperationRequestType: WAProto_1.proto.Message.PeerDataOperationRequestType.HISTORY_SYNC_ON_DEMAND
+        };
+        return sendPeerDataOperationMessage(pdoMessage);
+    };
+    const requestPlaceholderResend = async (messageKey) => {
+        var _a;
+        if (!((_a = authState.creds.me) === null || _a === void 0 ? void 0 : _a.id)) {
+            throw new boom_1.Boom('Not authenticated');
+        }
+        if (placeholderResendCache.get(messageKey === null || messageKey === void 0 ? void 0 : messageKey.id)) {
+            logger.debug('already requested resend', { messageKey });
+            return;
+        }
+        else {
+            placeholderResendCache.set(messageKey === null || messageKey === void 0 ? void 0 : messageKey.id, true);
+        }
+        await (0, Utils_1.delay)(5000);
+        if (!placeholderResendCache.get(messageKey === null || messageKey === void 0 ? void 0 : messageKey.id)) {
+            logger.debug('message received while resend requested', { messageKey });
+            return 'RESOLVED';
+        }
+        const pdoMessage = {
+            placeholderMessageResendRequest: [{
+                    messageKey
+                }],
+            peerDataOperationRequestType: WAProto_1.proto.Message.PeerDataOperationRequestType.PLACEHOLDER_MESSAGE_RESEND
+        };
+        setTimeout(() => {
+            if (placeholderResendCache.get(messageKey === null || messageKey === void 0 ? void 0 : messageKey.id)) {
+                logger.debug('PDO message without response after 15 seconds. Phone possibly offline', { messageKey });
+                placeholderResendCache.del(messageKey === null || messageKey === void 0 ? void 0 : messageKey.id);
+            }
+        }, 15000);
+        return sendPeerDataOperationMessage(pdoMessage);
     };
     const handleCall = async (node) => {
         const { attrs } = node;
@@ -762,7 +847,9 @@ const makeMessagesRecvSocket = (config) => {
         ...sock,
         sendMessageAck,
         sendRetryRequest,
-        rejectCall
+        rejectCall,
+        fetchMessageHistory,
+        requestPlaceholderResend,
     };
 };
 exports.makeMessagesRecvSocket = makeMessagesRecvSocket;

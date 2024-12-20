@@ -532,22 +532,14 @@ const getWAUploadToServer = ({ customUploadHosts, fetchAgent, logger, options },
         let uploadInfo = await refreshMediaConn(false);
         let urls;
         const hosts = [...customUploadHosts, ...uploadInfo.hosts];
-        const chunks = [];
-        for await (const chunk of stream) {
-            chunks.push(chunk);
-        }
-        const reqBody = Buffer.concat(chunks);
         fileEncSha256B64 = (0, exports.encodeBase64EncodedStringForUpload)(fileEncSha256B64);
-        for (const { hostname, maxContentLengthBytes } of hosts) {
+        for (const { hostname } of hosts) {
             logger.debug(`uploading to "${hostname}"`);
             const auth = encodeURIComponent(uploadInfo.auth); // the auth token
             const url = `https://${hostname}${Defaults_1.MEDIA_PATH_MAP[mediaType]}/${fileEncSha256B64}?auth=${auth}&token=${fileEncSha256B64}`;
             let result;
             try {
-                if (maxContentLengthBytes && reqBody.length > maxContentLengthBytes) {
-                    throw new boom_1.Boom(`Body too large for "${hostname}"`, { statusCode: 413 });
-                }
-                const body = await axios_1.default.post(url, reqBody, {
+                const body = await axios_1.default.post(url, stream, {
                     ...options,
                     headers: {
                         ...options.headers || {},

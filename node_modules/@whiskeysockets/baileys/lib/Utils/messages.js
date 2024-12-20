@@ -30,7 +30,6 @@ const MessageTypeProto = {
     'sticker': Types_1.WAProto.Message.StickerMessage,
     'document': Types_1.WAProto.Message.DocumentMessage,
 };
-const ButtonType = WAProto_1.proto.Message.ButtonsMessage.HeaderType;
 /**
  * Uses a regex to test whether the string contains a URL, and returns the URL if it does.
  * @param text eg. hello https://google.com
@@ -238,7 +237,7 @@ const generateForwardMessageContent = (message, forceForward) => {
 exports.generateForwardMessageContent = generateForwardMessageContent;
 const generateWAMessageContent = async (message, options) => {
     var _a;
-    var _b;
+    var _b, _c;
     let m = {};
     if ('text' in message) {
         const extContent = { text: message.text };
@@ -308,6 +307,33 @@ const generateWAMessageContent = async (message, options) => {
             message.disappearingMessagesInChat;
         m = (0, exports.prepareDisappearingMessageSettingContent)(exp);
     }
+    else if ('groupInvite' in message) {
+        m.groupInviteMessage = {};
+        m.groupInviteMessage.inviteCode = message.groupInvite.inviteCode;
+        m.groupInviteMessage.inviteExpiration = message.groupInvite.inviteExpiration;
+        m.groupInviteMessage.caption = message.groupInvite.text;
+        m.groupInviteMessage.groupJid = message.groupInvite.jid;
+        m.groupInviteMessage.groupName = message.groupInvite.subject;
+        //TODO: use built-in interface and get disappearing mode info etc.
+        //TODO: cache / use store!?
+        if (options.getProfilePicUrl) {
+            const pfpUrl = await options.getProfilePicUrl(message.groupInvite.jid, 'preview');
+            if (pfpUrl) {
+                const resp = await axios_1.default.get(pfpUrl, { responseType: 'arraybuffer' });
+                if (resp.status === 200) {
+                    m.groupInviteMessage.jpegThumbnail = resp.data;
+                }
+            }
+        }
+    }
+    else if ('pin' in message) {
+        m.pinInChatMessage = {};
+        m.messageContextInfo = {};
+        m.pinInChatMessage.key = message.pin;
+        m.pinInChatMessage.type = message.type;
+        m.pinInChatMessage.senderTimestampMs = Date.now();
+        m.messageContextInfo.messageAddOnDurationInSecs = message.type === 1 ? message.time || 86400 : 0;
+    }
     else if ('buttonReply' in message) {
         switch (message.type) {
             case 'template':
@@ -345,6 +371,7 @@ const generateWAMessageContent = async (message, options) => {
     }
     else if ('poll' in message) {
         (_b = message.poll).selectableCount || (_b.selectableCount = 0);
+        (_c = message.poll).toAnnouncementGroup || (_c.toAnnouncementGroup = false);
         if (!Array.isArray(message.poll.values)) {
             throw new boom_1.Boom('Invalid poll values', { statusCode: 400 });
         }
@@ -356,11 +383,25 @@ const generateWAMessageContent = async (message, options) => {
             // encKey
             messageSecret: message.poll.messageSecret || (0, crypto_1.randomBytes)(32),
         };
-        m.pollCreationMessage = {
+        const pollCreationMessage = {
             name: message.poll.name,
             selectableOptionsCount: message.poll.selectableCount,
             options: message.poll.values.map(optionName => ({ optionName })),
         };
+        if (message.poll.toAnnouncementGroup) {
+            // poll v2 is for community announcement groups (single select and multiple)
+            m.pollCreationMessageV2 = pollCreationMessage;
+        }
+        else {
+            if (message.poll.selectableCount > 0) {
+                //poll v3 is for single select polls
+                m.pollCreationMessageV3 = pollCreationMessage;
+            }
+            else {
+                // poll v3 for multiple choice polls
+                m.pollCreationMessage = pollCreationMessage;
+            }
+        }
     }
     else if ('sharePhoneNumber' in message) {
         m.protocolMessage = {
@@ -372,61 +413,6 @@ const generateWAMessageContent = async (message, options) => {
     }
     else {
         m = await (0, exports.prepareWAMessageMedia)(message, options);
-    }
-    if ('buttons' in message && !!message.buttons) {
-        const buttonsMessage = {
-            buttons: message.buttons.map(b => ({ ...b, type: WAProto_1.proto.Message.ButtonsMessage.Button.Type.RESPONSE }))
-        };
-        if ('text' in message) {
-            buttonsMessage.contentText = message.text;
-            buttonsMessage.headerType = ButtonType.EMPTY;
-        }
-        else {
-            if ('caption' in message) {
-                buttonsMessage.contentText = message.caption;
-            }
-            const type = Object.keys(m)[0].replace('Message', '').toUpperCase();
-            buttonsMessage.headerType = ButtonType[type];
-            Object.assign(buttonsMessage, m);
-        }
-        if ('footer' in message && !!message.footer) {
-            buttonsMessage.footerText = message.footer;
-        }
-        m = { buttonsMessage };
-    }
-    else if ('templateButtons' in message && !!message.templateButtons) {
-        const msg = {
-            hydratedButtons: message.templateButtons
-        };
-        if ('text' in message) {
-            msg.hydratedContentText = message.text;
-        }
-        else {
-            if ('caption' in message) {
-                msg.hydratedContentText = message.caption;
-            }
-            Object.assign(msg, m);
-        }
-        if ('footer' in message && !!message.footer) {
-            msg.hydratedFooterText = message.footer;
-        }
-        m = {
-            templateMessage: {
-                fourRowTemplate: msg,
-                hydratedTemplate: msg
-            }
-        };
-    }
-    if ('sections' in message && !!message.sections) {
-        const listMessage = {
-            sections: message.sections,
-            buttonText: message.buttonText,
-            title: message.title,
-            footerText: message.footer,
-            description: message.text,
-            listType: WAProto_1.proto.Message.ListMessage.ListType.SINGLE_SELECT
-        };
-        m = { listMessage };
     }
     if ('viewOnce' in message && !!message.viewOnce) {
         m = { viewOnceMessage: { message: m } };
