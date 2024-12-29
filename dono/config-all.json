@@ -15,6 +15,7 @@
   "stopcmdlist": true,
   "recarga": false,
   "host": "TERMUX / HOST WEB",
+  "API_KEY_FREE": "compre uma apikey e coloque ela aqui",
   "AssemblyApiKey": "11d7fb1a4e8f4e4fac85d3b9be844b4a",
   "blacksite": "https://blacksystemofc.com.br",
   "idchatofc": "120363047549719506@g.us",
