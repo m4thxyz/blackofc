@@ -2,7 +2,7 @@
 
 <h1 align="center">
 <p>
-<img src= "https://pomf2.lain.la/f/csdvdzvo.jpg" alt="BLACK MD" width="720">
+<img src= "https://blackstorage.store/midia/1735498459517.jpg" alt="BLACK MD" width="720">
 </p>
 
 <p align="center">
